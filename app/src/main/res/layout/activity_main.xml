@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topTableLayout_height"
+        android:stretchColumns="1,2,3"
+        android:padding="20dp">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/scoreTableRow">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/score"
+                android:id="@+id/scoreTextView0"
+                android:layout_column="3"
+                android:textSize="@dimen/scoreTextView"
+                android:textColor="@color/scoreColor"
+                android:paddingRight="-40dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/scoreTextView1"
+                android:layout_column="4"
+                android:textSize="@dimen/scoreValue"
+                android:textColor="@color/scoreColor"/>
+
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/middleTableLayout_height">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tableRow0"
+            android:gravity="center_vertical|center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/numberTextView1"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:textColor="@color/scoreColor"
+                android:layout_column="1"
+                android:textSize="@dimen/problemView"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:textColor="@color/scoreColor"
+                android:id="@+id/symbolTextView"
+                android:textSize="@dimen/problemView"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:textColor="@color/scoreColor"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:id="@+id/numberTextView2"
+                android:textSize="@dimen/problemView"/>
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <EditText
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/userEditText"
+            android:layout_marginTop="50dp"/>
+
+        <Button
+            android:layout_width="206dp"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button"
+            android:layout_marginTop="50dp"/>
+
+    </TableLayout>
+
+</LinearLayout>
