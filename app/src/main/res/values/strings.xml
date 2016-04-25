@@ -3,4 +3,6 @@
     <string name="score">Score :</string>
     <string name="equal">=</string>
     <string name="signSymbol">+</string>
+    <string name="timeLeft">Time Remaining</string>
+    <string name="enterButton">Enter</string>
 </resources>
