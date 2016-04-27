@@ -5,4 +5,5 @@
     <string name="signSymbol">+</string>
     <string name="timeLeft">Time Remaining</string>
     <string name="enterButton">Enter</string>
+    <string name="blank">" "</string>
 </resources>

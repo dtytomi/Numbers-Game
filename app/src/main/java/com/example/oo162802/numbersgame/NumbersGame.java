@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.EditText;
 import android.widget.Button;
 import android.view.View;
@@ -19,15 +20,16 @@ import java.util.Random;
 public class NumbersGame extends AppCompatActivity {
 
     private char[] symbol = {'-','+','x','/'};
-    private int score, answer, valueLeft, valueRight;
-    private boolean left = false, right = false, neutral = false;
-    private double result;
-    private String level = "Beginner";
+    private int score, answer, valueLeft, valueRight, totalNumberOfQuestion,
+            level = 1,totalNumberAnswered;
+    private double result, correctAnswer;
+    private String  timeUpdate;
+    private int timeLeft;
+    private Handler handler;
 
     private EditText userEditText;
     private TextView numberTextView1;
     private TextView numberTextView2;
-    private TextView scoreTextView1;
     private TextView symbolTextView;
     private TextView scoreTextView;
     private TextView resultTextView;
@@ -48,53 +50,63 @@ public class NumbersGame extends AppCompatActivity {
         symbolTextView = (TextView) findViewById(R.id.symbolTextView);
         userEditText = (EditText) findViewById(R.id.userInputAnswer);
         timerView = (Chronometer) findViewById(R.id.timerView);
+        handler = new Handler();
 
 
         Button enterButton = (Button) findViewById(R.id.enterButton);
         enterButton.setOnClickListener(enterButtonListener);
 
         score = 0;
+        totalNumberAnswered = 0;
         scoreTextView.setText(String.valueOf(score));
+
 
        start();
 
     }
 
     public void start(){
+
         switch (level){
-            case "Beginner": problem(9, 30000);
+            case 1: totalNumberOfQuestion = 10;
+                             timeLeft = 30000;
+                             loadQuestion();
                 break;
-            case "Intermediate": problem(15, 45000);
+            case 2: totalNumberOfQuestion = 15;
+                                 timeLeft = 45000;
+                                 loadQuestion();
                 break;
-            case "Advance": problem(19, 50000);
+            case 3: totalNumberOfQuestion = 20;
+                            timeLeft = 60000;
+                            loadQuestion();
                 break;
-            case "Pro": problem(29, 60000);
+            case 4: totalNumberOfQuestion = 30;
+                        timeLeft = 90000;
+                        loadQuestion();
                 break;
         }
+
+        new CountDownTimer(timeLeft, 1000){
+            public void onTick(long millisUntilFinished) {
+                timerView.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                timerView.setText("Time Up!");
+            }
+        }.start();
+
     }
 
-   private void problem( int numOfQuestions, final int timeLeft){
+   private void loadQuestion(){
 
-       new CountDownTimer(timeLeft, 1000){
-           public void onTick(long millisUntilFinished) {
-               timerView.setText("seconds remaining: " + millisUntilFinished / 1000);
-           }
-
-           public void onFinish() {
-               timerView.setText("DONE!");
-           }
-       }.start();
-
-       int questionBandWidth = numOfQuestions;
-
-       while(numOfQuestions != 0 && timeLeft != 0 ) {
-
-           valueLeft = 1 + randomNumber.nextInt(questionBandWidth);
-           valueRight = 1 + randomNumber.nextInt(questionBandWidth);
+           valueLeft = 1 + randomNumber.nextInt(totalNumberOfQuestion);
+           valueRight = 1 + randomNumber.nextInt(totalNumberOfQuestion);
            result = 0.0;
 
            int randomSymbol = randomNumber.nextInt(4);
            int questionMark = 1 + randomNumber.nextInt(5);
+           int temp;
 
            switch (symbol[randomSymbol]) {
                case '+':
@@ -102,6 +114,11 @@ public class NumbersGame extends AppCompatActivity {
                    symbolTextView.setText("+");
                    break;
                case '/':
+                   if (valueLeft < valueRight){
+                       temp = valueLeft;
+                       valueLeft = valueRight;
+                       valueRight = temp;
+                   }
                    result = valueLeft / valueRight;
                    symbolTextView.setText("/");
                    break;
@@ -110,45 +127,109 @@ public class NumbersGame extends AppCompatActivity {
                    symbolTextView.setText("x");
                    break;
                case '-':
+                   if (valueLeft < valueRight){
+                       temp = valueLeft;
+                       valueLeft = valueRight;
+                       valueRight = temp;
+                   }
                    result = valueLeft - valueRight;
                    symbolTextView.setText("-");
                    break;
            }
 
            if (questionMark % 2 == 0) {
-               right = true;
                numberTextView1.setText(String.valueOf(valueLeft));
+               correctAnswer = valueRight;
                numberTextView2.setText("?");
                resultTextView.setText(String.format("%.2f", result));
            }
 
            if (questionMark % 2 == 1) {
-               left = true;
                numberTextView1.setText("?");
+               correctAnswer = valueLeft;
                numberTextView2.setText(String.valueOf(valueRight));
                resultTextView.setText(String.format("%.2f", result));
            }
 
            if (questionMark % 2 == 1 && questionMark % 3 == 0) {
-               neutral = true;
                numberTextView1.setText(String.valueOf(valueLeft));
                numberTextView2.setText(String.valueOf(valueRight));
                resultTextView.setText("?");
+               correctAnswer = result;
            }
 
-           --numOfQuestions;
-       }
 
    }
 
-    private void updateScore() {
+     private void submitAnswer(){
+        answer =  Integer.parseInt(userEditText.getText().toString());
         score += 1;
         scoreTextView.setText(String.valueOf(score));
-    }
 
-    private void checkAnswer(double rightValue, int usersInput){
-        if(rightValue == usersInput){
-            updateScore();
+         timeUpdate = timerView.getText().toString();
+
+        if(answer == correctAnswer){
+            totalNumberAnswered++;
+
+            if (timeUpdate != "Time Up!" && totalNumberAnswered == totalNumberOfQuestion){
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
+
+                builder.setMessage("You Won");
+                builder.setPositiveButton("Go To Next Stage", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        level++;
+                        NumbersGame.this.start();
+                    }
+                });
+
+                builder.setNegativeButton("Restart", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        level = 1;
+                        NumbersGame.this.start();
+                    }
+                });
+
+                AlertDialog userWon = builder.create();
+
+                userWon.show();
+            }
+            else if (timeUpdate != "Time Up!" && totalNumberAnswered != totalNumberOfQuestion){
+                handler.postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                              loadQuestion();
+                            }
+                        }, 1000);
+            }
+            else if (timeUpdate == "Time Up!" && totalNumberAnswered != totalNumberOfQuestion){
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
+
+                builder.setMessage("Game Over");
+                builder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        NumbersGame.this.start();
+                    }
+                });
+
+                builder.setNegativeButton("End Game", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        NumbersGame.this.finish();
+                    }
+                });
+
+                AlertDialog userLose = builder.create();
+
+                userLose.show();
+
+            }
         }
         else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
@@ -178,21 +259,8 @@ public class NumbersGame extends AppCompatActivity {
     public OnClickListener enterButtonListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-          answer =  Integer.parseInt(userEditText.getText().toString());
-           userEditText.clearFocus();
-
-          if(left){
-              checkAnswer(valueLeft, answer);
-          }
-
-          if(right){
-             checkAnswer(valueRight, answer);
-          }
-
-          if(neutral){
-             checkAnswer(result, answer);
-          }
-
+            submitAnswer();
+            userEditText.getText().clear();
         }
     };
 }

@@ -13,7 +13,8 @@
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/scoreTableRow">
+            android:id="@+id/scoreTableRow"
+            android:layout_marginTop="20dp">
 
             <Chronometer
                 android:layout_width="wrap_content"
@@ -54,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/tableRow0"
-            android:gravity="center_vertical|center">
+            android:gravity="center_vertical|center"
+            android:layout_marginTop="40dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -118,18 +120,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <EditText
-                android:layout_width="240dp"
+            <TextView
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:text="@string/blank"
+                android:id="@+id/textView3"/>
+
+            <EditText
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
                 android:ems="10"
                 android:id="@+id/userInputAnswer"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/blank"
+                android:id="@+id/textView4"/>
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/blank"
+                android:id="@+id/textView"
+                android:textSize="@dimen/scoreValue"/>
 
             <Button
                 android:layout_width="206dp"
@@ -137,6 +159,12 @@
                 android:text="@string/enterButton"
                 android:id="@+id/enterButton"
                 android:layout_column="0"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/blank"
+                android:id="@+id/textView2"/>
         </TableRow>
 
     </TableLayout>
