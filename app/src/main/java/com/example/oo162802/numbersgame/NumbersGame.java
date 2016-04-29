@@ -60,8 +60,7 @@ public class NumbersGame extends AppCompatActivity {
         totalNumberAnswered = 0;
         scoreTextView.setText(String.valueOf(score));
 
-
-       start();
+        start();
 
     }
 
@@ -93,6 +92,7 @@ public class NumbersGame extends AppCompatActivity {
 
             public void onFinish() {
                 timerView.setText("Time Up!");
+                gameEnd();
             }
         }.start();
 
@@ -163,15 +163,13 @@ public class NumbersGame extends AppCompatActivity {
 
      private void submitAnswer(){
         answer =  Integer.parseInt(userEditText.getText().toString());
-        score += 1;
-        scoreTextView.setText(String.valueOf(score));
-
-         timeUpdate = timerView.getText().toString();
 
         if(answer == correctAnswer){
+            score += 1;
+            scoreTextView.setText(String.valueOf(score));
             totalNumberAnswered++;
 
-            if (timeUpdate != "Time Up!" && totalNumberAnswered == totalNumberOfQuestion){
+            if ( totalNumberAnswered == totalNumberOfQuestion){
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
 
@@ -196,7 +194,7 @@ public class NumbersGame extends AppCompatActivity {
 
                 userWon.show();
             }
-            else if (timeUpdate != "Time Up!" && totalNumberAnswered != totalNumberOfQuestion){
+            else {
                 handler.postDelayed(
                         new Runnable() {
                             @Override
@@ -205,31 +203,7 @@ public class NumbersGame extends AppCompatActivity {
                             }
                         }, 1000);
             }
-            else if (timeUpdate == "Time Up!" && totalNumberAnswered != totalNumberOfQuestion){
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
-
-                builder.setMessage("Game Over");
-                builder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        NumbersGame.this.start();
-                    }
-                });
-
-                builder.setNegativeButton("End Game", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        NumbersGame.this.finish();
-                    }
-                });
-
-                AlertDialog userLose = builder.create();
-
-                userLose.show();
-
-            }
         }
         else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
@@ -238,9 +212,73 @@ public class NumbersGame extends AppCompatActivity {
                 builder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        level = 1;
+                        score = 0;
+                        totalNumberAnswered = 0;
                         NumbersGame.this.start();
                     }
                 });
+
+               builder.setNegativeButton("End Game", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    NumbersGame.this.finish();
+                }
+             });
+
+             AlertDialog userLose = builder.create();
+
+             userLose.show();
+        }
+    }
+
+    public OnClickListener enterButtonListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            submitAnswer();
+            userEditText.getText().clear();
+        }
+    };
+
+    private void gameEnd(){
+        if ( totalNumberAnswered == totalNumberOfQuestion ){
+            AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
+
+            builder.setMessage("You Won");
+            builder.setPositiveButton("Go To Next Stage", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    level++;
+                    NumbersGame.this.start();
+                }
+            });
+
+            builder.setNegativeButton("Restart", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    level = 1;
+                    NumbersGame.this.start();
+                }
+            });
+
+            AlertDialog userWon = builder.create();
+
+            userWon.show();
+        }
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(NumbersGame.this);
+
+            builder.setMessage("Game Over");
+            builder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    level = 1;
+                    score = 0;
+                    totalNumberAnswered = 0;
+                    NumbersGame.this.start();
+                }
+            });
 
             builder.setNegativeButton("End Game", new DialogInterface.OnClickListener() {
                 @Override
@@ -255,12 +293,4 @@ public class NumbersGame extends AppCompatActivity {
             userLose.show();
         }
     }
-
-    public OnClickListener enterButtonListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            submitAnswer();
-            userEditText.getText().clear();
-        }
-    };
 }
